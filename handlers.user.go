@@ -15,14 +15,34 @@ func showRegistrationPage(c *gin.Context) {
 	render(c, gin.H{"title": "Register"}, "register.html")
 }
 func showLoginPage(c *gin.Context) {
-
+	render(c, gin.H{"title": "Login"}, "login.html")
 }
 
 func performLogin(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+
+	if isValidUser(username, password) {
+
+		token := generateSessionToken()
+		c.SetCookie("token", token, 3600, "", "", false, true)
+
+		c.HTML(http.StatusOK, "login-successful.html", gin.H{
+			"title": "Successful login",
+		})
+	} else {
+		c.HTML(http.StatusBadRequest, "login.html", gin.H{
+			"ErrorTitle":   "Login failed",
+			"ErrorMessage": "Invalid credentials provided",
+		})
+	}
 
 }
 
 func logout(c *gin.Context) {
+
+	c.SetCookie("token", "", -1, "", "", false, true)
+	c.Redirect(http.StatusTemporaryRedirect, "/")
 
 }
 

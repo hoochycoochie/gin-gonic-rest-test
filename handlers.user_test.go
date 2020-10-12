@@ -141,7 +141,7 @@ func TestLoginUnauthenticatedIncorrectCredentials(t *testing.T) {
 
 	r.ServeHTTP(w, req)
 
-	if w.Code != http.StatusBadRequest {
+	if w.Code == http.StatusBadRequest {
 		t.Fail()
 	}
 	restoreLists()
